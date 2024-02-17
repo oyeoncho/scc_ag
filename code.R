@@ -23,7 +23,8 @@ Cx0 <- Cx0 %>% mutate(scc0_m = ifelse(scc0 >= median(scc0), 1, 0), scc1_m = ifel
                       scc_v1_m = ifelse(scc_v1 >= median(scc_v1), 1, 0), scc_v2_m = ifelse(scc_v2 >= median(scc_v2), 1, 0),
                       cyfra0_m = ifelse(cyfra0 >= median(cyfra0), 1, 0), cyfra1_m = ifelse(cyfra1 >= median(cyfra1), 1, 0), cyfra2_m = ifelse(cyfra2 >= median(cyfra2), 1, 0), 
                       cyfra_v1_m = ifelse(cyfra_v1 >= median(cyfra_v1), 1, 0), cyfra_v2_m = ifelse(cyfra_v2 >= median(cyfra_v2), 1, 0),
-                      Age_m=ifelse(Age >=65, 1, 0), Hb0_m = ifelse(Hb0 < median(Hb0), 1, 0), NLR_m = ifelse(NLR >= median(NLR), 1, 0), duration_m= ifelse(duration >= 56, 1, 0),
+                      Age_m=ifelse(Age >=65, 1, 0), Hb0_m = ifelse(Hb0 < median(Hb0), 1, 0), NLR_m = ifelse(NLR >= median(NLR), 1, 0), PLT_m = ifelse(PLT >= median(PLT), 1, 0),
+                      duration_m= ifelse(duration >= 56, 1, 0),
                       EQD2_m=ifelse(EQD2 < 70, 1, 0),
                       recur_m = ifelse(recur1>0,1,0),
                       recur2 = ifelse(recur1==1, 1,0),
@@ -209,7 +210,7 @@ text(0.3, 0.02, labels="AUC:0.642 (0.511-0.773), p<0.001", col="black", cex=1)
 
 ##
 Cx2 <- Cx0 %>% mutate(TS = Surv(fu_date, css==1)) 
-Cx_m <-  Cx2  %>% select(TS, Age_m, EQD2_m, duration_m, le, Hb0_m, NLR_m, scc0_m, scc1_m, scc2_m, cyfra0_m, cyfra1_m, cyfra2_m, 
+Cx_m <-  Cx2  %>% select(TS, Age_m, EQD2_m, duration_m, le, Hb0_m, NLR_m, PLT_m, scc0_m, scc1_m, scc2_m, cyfra0_m, cyfra1_m, cyfra2_m, 
                          scc_v1_m,  scc_v2_m, cyfra_v1_m, cyfra_v2_m) %>% as.data.frame()
 out=mycph(TS~., data=Cx_m)
 write.csv(out, file="uv_css.csv")
@@ -221,7 +222,7 @@ ggforest(finalmodel, data=Cx_m, fontsize = 1.7)
 
 ####
 Cx2 <- Cx0 %>% mutate(TS = Surv(recur_date, recur_m==1)) 
-Cx_m <-  Cx2  %>% select(TS, Age_m, EQD2_m, duration_m, le, Hb0_m, NLR_m, scc0_m, scc1_m, scc2_m, cyfra0_m, cyfra1_m, cyfra2_m, 
+Cx_m <-  Cx2  %>% select(TS, Age_m, EQD2_m, duration_m, le, Hb0_m, NLR_m, PLT_m, scc0_m, scc1_m, scc2_m, cyfra0_m, cyfra1_m, cyfra2_m, 
                          scc_v1_m,  scc_v2_m, cyfra_v1_m, cyfra_v2_m) %>% as.data.frame()
 
 out=mycph(TS~., data=Cx_m)
@@ -269,5 +270,7 @@ summary(fit, time=60)
 ### 
 
 library(moonBook)
-mytable(group~css+fu_date+recur1+recur_date+Age_m+le+EQD2_m+duration_m+Hb0_m+NLR_m+scc1_m+scc2_m+scc_v1_m+cyfra0_m+cyfra1_m+cyfra2_m+cyfra_v1_m+cyfra_v2_m+treatment, data=Cx3, method=3)
-mytable(~css+fu_date+recur1+recur_date+Age_m+le+EQD2_m+duration_m+Hb0_m+NLR_m+scc1_m+scc2_m+scc_v1_m+cyfra0_m+cyfra1_m+cyfra2_m+cyfra_v1_m+cyfra_v2_m+treatment, data=Cx3, method=3)
+mytable(group~css+fu_date+recur1+recur_date+Age_m+le+EQD2_m+duration_m+Hb0_m+NLR_m+PLT_m+scc1_m+scc2_m+scc_v1_m+cyfra0_m+cyfra1_m+cyfra2_m+cyfra_v1_m+cyfra_v2_m+treatment, data=Cx3, method=3)
+mytable(~css+fu_date+recur1+recur_date+Age_m+le+EQD2_m+duration_m+Hb0_m+NLR_m+PLT_m+scc1_m+scc2_m+scc_v1_m+cyfra0_m+cyfra1_m+cyfra2_m+cyfra_v1_m+cyfra_v2_m+treatment, data=Cx3, method=3)
+
+summary(Cx3)
